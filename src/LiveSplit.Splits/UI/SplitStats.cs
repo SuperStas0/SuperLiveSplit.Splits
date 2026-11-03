@@ -19,8 +19,10 @@ public class SplitStats
 {
     public const string VariableName = "SplitsReachStats";
 
-    private const string FormatVersion = "2";
+    private const string FormatVersion = "3";
+    private const string FormatVersionWithoutOutcomes = "2";
     private const string FormatVersionWithoutHistory = "1";
+    private const int MaxOutcomes = 1000;
 
     private sealed class Entry
     {
@@ -28,6 +30,22 @@ public class SplitStats
         public int Completed { get; set; }
         public int HistoryCount { get; set; } = -1;
         public long HistorySum { get; set; }
+
+        /// <summary>
+        /// One character per attempt that reached the split, oldest first: 1 when it was passed, 0 when not.
+        /// </summary>
+        public StringBuilder Outcomes { get; } = new();
+
+        public bool OutcomesKnown { get; set; } = true;
+
+        public void AddOutcome(bool passed)
+        {
+            Outcomes.Append(passed ? '1' : '0');
+            if (Outcomes.Length > MaxOutcomes)
+            {
+                Outcomes.Remove(0, Outcomes.Length - MaxOutcomes);
+            }
+        }
     }
 
     private IRun cachedRun;
@@ -39,6 +57,7 @@ public class SplitStats
     private int attempts;
     private int lastAttempt = int.MinValue;
     private readonly Dictionary<TimingMethod, double?[]> averageCache = new();
+    private readonly Dictionary<(RateWindow Window, int Passed), (int Reached, int Completed)[]> windowCache = new();
 
     public void Commit(IRun run)
     {
@@ -57,7 +76,7 @@ public class SplitStats
             return 0;
         }
 
-        GetLiveCounts(state.CurrentSplitIndex, splitIndex, out _, out int completed);
+        GetLiveCounts(state.CurrentSplitIndex, splitIndex, RateWindow.All, out _, out int completed);
         return completed;
     }
 
@@ -70,11 +89,11 @@ public class SplitStats
             return 0;
         }
 
-        GetLiveCounts(state.CurrentSplitIndex, splitIndex, out int reached, out _);
+        GetLiveCounts(state.CurrentSplitIndex, splitIndex, RateWindow.All, out int reached, out _);
         return reached;
     }
 
-    public double? GetPassRate(LiveSplitState state, int splitIndex)
+    public double? GetPassRate(LiveSplitState state, int splitIndex, RateWindow window)
     {
         Sync(state.Run);
 
@@ -83,7 +102,7 @@ public class SplitStats
             return null;
         }
 
-        GetLiveCounts(state.CurrentSplitIndex, splitIndex, out int reached, out int completed);
+        GetLiveCounts(state.CurrentSplitIndex, splitIndex, window, out int reached, out int completed);
         return reached > 0 ? (double)completed / reached : null;
     }
 
@@ -91,7 +110,7 @@ public class SplitStats
     /// The chance to reach a split: the product of the pass rates of all splits before it.
     /// A split before it that was never reached makes it 0, or null while no attempt is recorded.
     /// </summary>
-    public double? GetReachRate(LiveSplitState state, int splitIndex)
+    public double? GetReachRate(LiveSplitState state, int splitIndex, RateWindow window)
     {
         Sync(state.Run);
 
@@ -103,7 +122,7 @@ public class SplitStats
         double rate = 1;
         for (int i = 0; i < splitIndex; i++)
         {
-            GetLiveCounts(state.CurrentSplitIndex, i, out int reached, out int completed);
+            GetLiveCounts(state.CurrentSplitIndex, i, window, out int reached, out int completed);
             if (reached == 0)
             {
                 return attempts > 0 ? 0 : null;
@@ -120,7 +139,7 @@ public class SplitStats
     /// An attempt that passes a split spends its average segment time there, an attempt that fails it
     /// spends half of that. Blank for the first split and when the split can't be reached.
     /// </summary>
-    public TimeSpan? GetEstimatedReachingTime(LiveSplitState state, int splitIndex, TimingMethod method)
+    public TimeSpan? GetEstimatedReachingTime(LiveSplitState state, int splitIndex, TimingMethod method, RateWindow window)
     {
         Sync(state.Run);
 
@@ -134,7 +153,7 @@ public class SplitStats
         double cost = 0;
         for (int i = 0; i < splitIndex; i++)
         {
-            GetLiveCounts(state.CurrentSplitIndex, i, out int reached, out int completed);
+            GetLiveCounts(state.CurrentSplitIndex, i, window, out int reached, out int completed);
             if (reached == 0 || completed == 0 || averages[i] == null)
             {
                 return null;
@@ -187,11 +206,58 @@ public class SplitStats
     /// The running attempt only counts for the splits it has already passed. It counts for the
     /// split it is on only once it is reset there, so arriving at a split never lowers its pass rate.
     /// </summary>
-    private void GetLiveCounts(int current, int splitIndex, out int reached, out int completed)
+    private void GetLiveCounts(int current, int splitIndex, RateWindow window, out int reached, out int completed)
     {
         int passed = splitIndex < current ? 1 : 0;
-        reached = entries[splitIndex].Reached + passed;
-        completed = entries[splitIndex].Completed + passed;
+        if (window == RateWindow.All)
+        {
+            reached = entries[splitIndex].Reached + passed;
+            completed = entries[splitIndex].Completed + passed;
+            return;
+        }
+
+        (reached, completed) = GetWindowCounts(window, passed)[splitIndex];
+    }
+
+    /// <summary>
+    /// The counts over only the most recent attempts that reached each split: the last 50, or the last 10% (at least 10).
+    /// An attempt that did not reach the split is not part of its window.
+    /// </summary>
+    private (int Reached, int Completed)[] GetWindowCounts(RateWindow window, int passed)
+    {
+        if (windowCache.TryGetValue((window, passed), out (int Reached, int Completed)[] cached))
+        {
+            return cached;
+        }
+
+        var counts = new (int Reached, int Completed)[entries.Length];
+        for (int i = 0; i < counts.Length; i++)
+        {
+            Entry entry = entries[i];
+            int totalReached = entry.Reached + passed;
+            int known = entry.Outcomes.Length;
+            if (known == 0)
+            {
+                counts[i] = (totalReached, entry.Completed + passed);
+                continue;
+            }
+
+            int size = window == RateWindow.Last50 ? 50 : Math.Max(10, (int)Math.Ceiling(totalReached * 0.1));
+            int take = Math.Min(size, known + passed);
+            int completed = passed;
+            for (int k = known - (take - passed); k < known; k++)
+            {
+                if (entry.Outcomes[k] == '1')
+                {
+                    completed++;
+                }
+            }
+
+            counts[i] = (take, completed);
+        }
+
+        windowCache[(window, passed)] = counts;
+        return counts;
     }
 
     private bool Sync(IRun run)
@@ -233,6 +299,7 @@ public class SplitStats
     private bool Rebuild(IRun run, string text)
     {
         averageCache.Clear();
+        windowCache.Clear();
         Dictionary<string, Entry> stored = Parse(text, out int storedAttempts, out int storedLastAttempt);
         bool hasStored = stored != null;
         string[] keys = GetKeys(run);
@@ -283,14 +350,22 @@ public class SplitStats
         }
 
         bool anySeed = seed.Contains(true);
+        var needOutcomes = new bool[keys.Length];
+        for (int i = 0; i < needOutcomes.Length; i++)
+        {
+            needOutcomes[i] = !newEntries[i].OutcomesKnown;
+        }
+
+        bool anyWork = anySeed || needOutcomes.Contains(true);
         int previousLastAttempt = hasStored ? storedLastAttempt : int.MinValue;
         int newAttempts = hasStored ? storedAttempts : 0;
         int counted = 0;
         var apply = new bool[keys.Length];
+        var append = new bool[keys.Length];
         foreach (int attemptId in attemptIds)
         {
             bool isNew = attemptId > previousLastAttempt;
-            if (!isNew && !anySeed)
+            if (!isNew && !anyWork)
             {
                 continue;
             }
@@ -298,9 +373,10 @@ public class SplitStats
             for (int i = 0; i < apply.Length; i++)
             {
                 apply[i] = seed[i] || (isNew && catchUp[i]);
+                append[i] = apply[i] || needOutcomes[i];
             }
 
-            CountAttempt(run, attemptId, newEntries, apply);
+            CountAttempt(run, attemptId, newEntries, apply, append);
 
             if (isNew)
             {
@@ -313,6 +389,7 @@ public class SplitStats
         {
             newEntries[i].HistoryCount = fingerprints[i].Count;
             newEntries[i].HistorySum = fingerprints[i].Sum;
+            newEntries[i].OutcomesKnown = true;
         }
 
         cachedRun = run;
@@ -339,7 +416,7 @@ public class SplitStats
     /// A split was passed when it has a history entry for the attempt (this includes skipped splits).
     /// A split was reached when it was passed, or when it is the first split that was not passed.
     /// </summary>
-    private static void CountAttempt(IRun run, int attemptId, Entry[] targets, bool[] apply)
+    private static void CountAttempt(IRun run, int attemptId, Entry[] targets, bool[] apply, bool[] append)
     {
         bool gapFound = false;
         for (int i = 0; i < targets.Length; i++)
@@ -347,6 +424,11 @@ public class SplitStats
             bool passed = run[i].SegmentHistory.ContainsKey(attemptId);
             bool reached = passed || !gapFound;
             gapFound |= !passed;
+
+            if (append[i] && reached)
+            {
+                targets[i].AddOutcome(passed);
+            }
 
             if (!apply[i])
             {
@@ -423,6 +505,7 @@ public class SplitStats
             builder.Append(',').Append(entries[i].Completed.ToString(CultureInfo.InvariantCulture));
             builder.Append(',').Append(entries[i].HistoryCount.ToString(CultureInfo.InvariantCulture));
             builder.Append(',').Append(entries[i].HistorySum.ToString(CultureInfo.InvariantCulture));
+            builder.Append(',').Append(entries[i].Outcomes.ToString());
         }
 
         return builder.ToString();
@@ -440,20 +523,21 @@ public class SplitStats
 
         string[] parts = text.Split('|');
         if (parts.Length < 3
-            || (parts[0] != FormatVersion && parts[0] != FormatVersionWithoutHistory)
+            || (parts[0] != FormatVersion && parts[0] != FormatVersionWithoutOutcomes && parts[0] != FormatVersionWithoutHistory)
             || !int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out storedAttempts)
             || !int.TryParse(parts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out storedLastAttempt))
         {
             return null;
         }
 
-        bool hasHistory = parts[0] == FormatVersion;
+        bool hasHistory = parts[0] != FormatVersionWithoutHistory;
+        bool hasOutcomes = parts[0] == FormatVersion;
         var result = new Dictionary<string, Entry>();
         for (int i = 3; i < parts.Length; i++)
         {
             string[] fields = parts[i].Split(',');
             var entry = new Entry();
-            if (fields.Length != (hasHistory ? 6 : 4)
+            if (fields.Length != (hasOutcomes ? 7 : hasHistory ? 6 : 4)
                 || !int.TryParse(fields[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int reached)
                 || !int.TryParse(fields[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int completed))
             {
@@ -472,6 +556,17 @@ public class SplitStats
 
                 entry.HistoryCount = historyCount;
                 entry.HistorySum = historySum;
+            }
+
+            entry.OutcomesKnown = hasOutcomes;
+            if (hasOutcomes)
+            {
+                if (fields[6].Length > MaxOutcomes || fields[6].Any(x => x != '0' && x != '1'))
+                {
+                    return null;
+                }
+
+                entry.Outcomes.Append(fields[6]);
             }
 
             result[fields[0] + "," + fields[1]] = entry;

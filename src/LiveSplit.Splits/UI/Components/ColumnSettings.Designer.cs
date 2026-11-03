@@ -33,6 +33,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbRateRuns = new System.Windows.Forms.ComboBox();
             this.txtName = new System.Windows.Forms.TextBox();
             this.cmbColumnType = new System.Windows.Forms.ComboBox();
             this.cmbComparison = new System.Windows.Forms.ComboBox();
@@ -61,21 +63,24 @@
             this.tableLayoutPanel1.Controls.Add(this.cmbColumnType, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.cmbComparison, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.cmbTimingMethod, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.chkColorByRate, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.btnRemoveColumn, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.btnMoveDown, 2, 5);
-            this.tableLayoutPanel1.Controls.Add(this.btnMoveUp, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.cmbRateRuns, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.chkColorByRate, 1, 5);
+            this.tableLayoutPanel1.Controls.Add(this.btnRemoveColumn, 3, 6);
+            this.tableLayoutPanel1.Controls.Add(this.btnMoveDown, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.btnMoveUp, 1, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutPanel1.Size = 	new System.Drawing.Size(421, 175);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+            this.tableLayoutPanel1.Size = 	new System.Drawing.Size(421, 204);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -117,6 +122,31 @@
             this.label4.Size = new System.Drawing.Size(84, 13);
             this.label4.TabIndex = 45;
             this.label4.Text = "Comparison:";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 124);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(84, 13);
+            this.label5.TabIndex = 53;
+            this.label5.Text = "Rates based on:";
+            // 
+            // cmbRateRuns
+            // 
+            this.cmbRateRuns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.cmbRateRuns, 3);
+            this.cmbRateRuns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbRateRuns.FormattingEnabled = true;
+            this.cmbRateRuns.Items.AddRange(new object[] {
+            "All runs",
+            "Last 50 runs",
+            "Last 10% of runs (min 10)"});
+            this.cmbRateRuns.Location = new System.Drawing.Point(93, 120);
+            this.cmbRateRuns.Name = "cmbRateRuns";
+            this.cmbRateRuns.Size = new System.Drawing.Size(325, 21);
+            this.cmbRateRuns.TabIndex = 54;
             // 
             // txtName
             // 
@@ -186,7 +216,7 @@
             this.chkColorByRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.chkColorByRate.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkColorByRate, 3);
-            this.chkColorByRate.Location = new System.Drawing.Point(93, 121);
+            this.chkColorByRate.Location = new System.Drawing.Point(93, 150);
             this.chkColorByRate.Name = "chkColorByRate";
             this.chkColorByRate.Size = new System.Drawing.Size(325, 17);
             this.chkColorByRate.TabIndex = 49;
@@ -196,7 +226,7 @@
             // btnRemoveColumn
             // 
             this.btnRemoveColumn.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnRemoveColumn.Location = new System.Drawing.Point(324, 148);
+            this.btnRemoveColumn.Location = new System.Drawing.Point(324, 177);
             this.btnRemoveColumn.Name = "btnRemoveColumn";
             this.btnRemoveColumn.Size = new System.Drawing.Size(94, 23);
             this.btnRemoveColumn.TabIndex = 52;
@@ -207,7 +237,7 @@
             // btnMoveDown
             // 
             this.btnMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnMoveDown.Location = new System.Drawing.Point(223, 148);
+            this.btnMoveDown.Location = new System.Drawing.Point(223, 177);
             this.btnMoveDown.Name = "btnMoveDown";
             this.btnMoveDown.Size = new System.Drawing.Size(75, 23);
             this.btnMoveDown.TabIndex = 51;
@@ -218,7 +248,7 @@
             // btnMoveUp
             // 
             this.btnMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnMoveUp.Location = new System.Drawing.Point(142, 148);
+            this.btnMoveUp.Location = new System.Drawing.Point(142, 177);
             this.btnMoveUp.Name = "btnMoveUp";
             this.btnMoveUp.Size = new System.Drawing.Size(75, 23);
             this.btnMoveUp.TabIndex = 50;
@@ -232,7 +262,7 @@
             this.groupColumn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupColumn.Location = new System.Drawing.Point(0, 0);
             this.groupColumn.Name = "groupColumn";
-            this.groupColumn.Size = new System.Drawing.Size(427, 194);
+            this.groupColumn.Size = new System.Drawing.Size(427, 223);
             this.groupColumn.TabIndex = 1;
             this.groupColumn.TabStop = false;
             this.groupColumn.Text = "Column Name";
@@ -243,7 +273,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupColumn);
             this.Name = "ColumnSettings";
-            this.Size = new System.Drawing.Size(427, 194);
+            this.Size = new System.Drawing.Size(427, 223);
             this.Load += new System.EventHandler(ColumnSettings_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -268,5 +298,7 @@
         private System.Windows.Forms.Button btnMoveDown;
         private System.Windows.Forms.Button btnMoveUp;
         private System.Windows.Forms.CheckBox chkColorByRate;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cmbRateRuns;
     }
 }

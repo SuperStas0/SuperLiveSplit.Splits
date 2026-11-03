@@ -523,7 +523,7 @@ public class SplitComponent : IComponent
 
         if (data.Type == ColumnType.EstimatedReachingTime)
         {
-            TimeSpan? estimate = Stats.GetEstimatedReachingTime(state, splitIndex, timingMethod);
+            TimeSpan? estimate = Stats.GetEstimatedReachingTime(state, splitIndex, timingMethod, data.Window);
             label.Text = estimate == null ? "" : TimeFormatter.Format(estimate);
             return;
         }
@@ -534,7 +534,7 @@ public class SplitComponent : IComponent
             return;
         }
 
-        int? rate = ToPercent(data.Type == ColumnType.Passrate ? Stats.GetPassRate(state, splitIndex) : Stats.GetReachRate(state, splitIndex));
+        int? rate = ToPercent(data.Type == ColumnType.Passrate ? Stats.GetPassRate(state, splitIndex, data.Window) : Stats.GetReachRate(state, splitIndex, data.Window));
         if (rate == null)
         {
             label.Text = "";

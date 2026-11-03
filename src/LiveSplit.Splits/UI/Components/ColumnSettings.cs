@@ -31,6 +31,7 @@ public partial class ColumnSettings : UserControl
     public string Comparison { get => Data.Comparison; set => Data.Comparison = value; }
     public string TimingMethod { get => Data.TimingMethod; set => Data.TimingMethod = value; }
     public bool ColorByRate { get => Data.ColorByRate; set => Data.ColorByRate = value; }
+    public string RateRuns { get => Data.RateRuns; set => Data.RateRuns = value; }
 
     public ColumnData Data { get; set; }
     protected LiveSplitState CurrentState { get; set; }
@@ -77,10 +78,12 @@ public partial class ColumnSettings : UserControl
         cmbColumnType.DataBindings.Clear();
         cmbTimingMethod.DataBindings.Clear();
         chkColorByRate.DataBindings.Clear();
+        cmbRateRuns.DataBindings.Clear();
         txtName.DataBindings.Add("Text", this, "ColumnName", false, DataSourceUpdateMode.OnPropertyChanged);
         cmbColumnType.DataBindings.Add("SelectedItem", this, "Type", false, DataSourceUpdateMode.OnPropertyChanged);
         cmbTimingMethod.DataBindings.Add("SelectedItem", this, "TimingMethod", false, DataSourceUpdateMode.OnPropertyChanged);
         chkColorByRate.DataBindings.Add("Checked", this, "ColorByRate", false, DataSourceUpdateMode.OnPropertyChanged);
+        cmbRateRuns.DataBindings.Add("SelectedItem", this, "RateRuns", false, DataSourceUpdateMode.OnPropertyChanged);
     }
 
     public void UpdateEnabledButtons()
@@ -97,6 +100,7 @@ public partial class ColumnSettings : UserControl
     private void UpdateTypeDependentControls()
     {
         chkColorByRate.Enabled = Data.Type is ColumnType.Passrate or ColumnType.Reachrate;
+        cmbRateRuns.Enabled = Data.Type is ColumnType.Passrate or ColumnType.Reachrate or ColumnType.EstimatedReachingTime;
         cmbComparison.Enabled = !Data.IsStatistic;
         cmbTimingMethod.Enabled = Data.Type is not ColumnType.Completed and not ColumnType.Reached;
     }
