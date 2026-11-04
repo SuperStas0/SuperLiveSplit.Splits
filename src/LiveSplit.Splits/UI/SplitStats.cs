@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using LiveSplit.Model;
@@ -59,6 +60,7 @@ public class SplitStats
     private readonly Dictionary<TimingMethod, double?[]> averageCache = new();
     private readonly Dictionary<(RateWindow Window, int Passed), (int Reached, int Completed)[]> windowCache = new();
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public void Commit(IRun run)
     {
         if (Sync(run))
@@ -67,6 +69,7 @@ public class SplitStats
         }
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public int GetCompleted(LiveSplitState state, int splitIndex)
     {
         Sync(state.Run);
@@ -80,6 +83,7 @@ public class SplitStats
         return completed;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public int GetReached(LiveSplitState state, int splitIndex)
     {
         Sync(state.Run);
@@ -93,6 +97,7 @@ public class SplitStats
         return reached;
     }
 
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public double? GetPassRate(LiveSplitState state, int splitIndex, RateWindow window)
     {
         Sync(state.Run);
@@ -110,6 +115,7 @@ public class SplitStats
     /// The chance to reach a split: the product of the pass rates of all splits before it.
     /// A split before it that was never reached makes it 0, or null while no attempt is recorded.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public double? GetReachRate(LiveSplitState state, int splitIndex, RateWindow window)
     {
         Sync(state.Run);
@@ -139,6 +145,7 @@ public class SplitStats
     /// An attempt that passes a split spends its average segment time there, an attempt that fails it
     /// spends half of that. Blank for the first split and when the split can't be reached.
     /// </summary>
+    [MethodImpl(MethodImplOptions.Synchronized)]
     public TimeSpan? GetEstimatedReachingTime(LiveSplitState state, int splitIndex, TimingMethod method, RateWindow window)
     {
         Sync(state.Run);
