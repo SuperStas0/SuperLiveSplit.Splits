@@ -15,6 +15,7 @@ for %%a in (%*) do (
     echo %%a| findstr /c:"r" >nul && set "RELEASE=1"
     echo %%a| findstr /c:"h" >nul && set "HELP=1"
 )
+ver >nul
 if defined HELP echo Usage: build.bat [-c] [-i] [-r] [-h]
 if defined HELP echo   -c  clean: delete previous build output first
 if defined HELP echo   -i  install: copy the build to %INSTALLDIR%
