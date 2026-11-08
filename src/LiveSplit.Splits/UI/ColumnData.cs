@@ -5,6 +5,10 @@ namespace LiveSplit.UI;
 
 public class ColumnData
 {
+    public const string AllRuns = "All runs";
+    public const string Last50Runs = "Last 50 runs";
+    public const string Last10PercentRuns = "Last 10% of runs (min 10)";
+
     public string Name { get; set; }
     public ColumnType Type { get; set; }
     public string Comparison { get; set; }
@@ -14,14 +18,14 @@ public class ColumnData
 
     public RateWindow Window => RateRuns switch
     {
-        "Last 50 runs" => RateWindow.Last50,
-        "Last 10% of runs (min 10)" => RateWindow.Last10Percent,
+        Last50Runs => RateWindow.Last50,
+        Last10PercentRuns => RateWindow.Last10Percent,
         _ => RateWindow.All,
     };
 
     public bool IsStatistic => Type is ColumnType.Completed or ColumnType.Reached or ColumnType.Passrate or ColumnType.Reachrate or ColumnType.EstimatedReachingTime;
 
-    public ColumnData(string name, ColumnType type, string comparison, string method, bool colorByRate = false, string rateRuns = "All runs")
+    public ColumnData(string name, ColumnType type, string comparison, string method, bool colorByRate = false, string rateRuns = AllRuns)
     {
         Name = name;
         Type = type;
@@ -39,7 +43,7 @@ public class ColumnData
             element["Comparison"].InnerText,
             element["TimingMethod"].InnerText,
             SettingsHelper.ParseBool(element["ColorByRate"], false),
-            element["RateRuns"]?.InnerText ?? "All runs");
+            element["RateRuns"]?.InnerText ?? AllRuns);
     }
 
     public int CreateElement(XmlDocument document, XmlElement element)

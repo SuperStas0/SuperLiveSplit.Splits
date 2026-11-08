@@ -132,7 +132,7 @@ public partial class ColumnSettings : UserControl
         cmbComparison.DataBindings.Add("SelectedItem", this, "Comparison", false, DataSourceUpdateMode.OnPropertyChanged);
     }
 
-    private static string GetColumnType(ColumnType type)
+    internal static string GetColumnType(ColumnType type)
     {
         if (type == ColumnType.SplitTime)
         {

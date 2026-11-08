@@ -130,13 +130,17 @@ public class LabelsComponent : IComponent
         foreach (SimpleLabel label in LabelsList)
         {
             ColumnData column = ColumnsList.ElementAt(LabelsList.IndexOf(label));
-            if (string.IsNullOrEmpty(column.Name))
+            if (!string.IsNullOrEmpty(column.Name))
             {
-                label.Text = CompositeComparisons.GetShortComparisonName(column.Comparison == "Current Comparison" ? state.CurrentComparison : column.Comparison);
+                label.Text = column.Name;
+            }
+            else if (column.IsStatistic)
+            {
+                label.Text = ColumnSettings.GetColumnType(column.Type);
             }
             else
             {
-                label.Text = column.Name;
+                label.Text = CompositeComparisons.GetShortComparisonName(column.Comparison == "Current Comparison" ? state.CurrentComparison : column.Comparison);
             }
 
             label.ForeColor = Settings.LabelsColor;
