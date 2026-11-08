@@ -23,3 +23,6 @@ publish/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Release output
+release/

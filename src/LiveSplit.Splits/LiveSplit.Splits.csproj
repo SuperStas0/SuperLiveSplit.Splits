@@ -10,13 +10,13 @@
 
   <ItemGroup>
     <Reference Include="LiveSplit.Core">
-  <HintPath>..\..\lib\LiveSplit.Core.dll</HintPath>
-  <Private>False</Private>
-</Reference>
-<Reference Include="UpdateManager">
-  <HintPath>..\..\lib\UpdateManager.dll</HintPath>
-  <Private>False</Private>
-</Reference>
+      <HintPath>..\..\lib\LiveSplit.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UpdateManager">
+      <HintPath>..\..\lib\UpdateManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

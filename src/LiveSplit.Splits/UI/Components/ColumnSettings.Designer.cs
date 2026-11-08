@@ -47,9 +47,9 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.groupColumn.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // tableLayoutPanel1
-            // 
+            //
             this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 90F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
@@ -82,9 +82,9 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.Size = 	new System.Drawing.Size(421, 204);
             this.tableLayoutPanel1.TabIndex = 0;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 8);
@@ -92,9 +92,9 @@
             this.label1.Size = new System.Drawing.Size(84, 13);
             this.label1.TabIndex = 42;
             this.label1.Text = "Name:";
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 95);
@@ -102,9 +102,9 @@
             this.label2.Size = new System.Drawing.Size(84, 13);
             this.label2.TabIndex = 41;
             this.label2.Text = "Timing Method:";
-            // 
+            //
             // label3
-            // 
+            //
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 37);
@@ -112,9 +112,9 @@
             this.label3.Size = new System.Drawing.Size(84, 13);
             this.label3.TabIndex = 44;
             this.label3.Text = "Column Type:";
-            // 
+            //
             // label4
-            // 
+            //
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(3, 66);
@@ -122,9 +122,9 @@
             this.label4.Size = new System.Drawing.Size(84, 13);
             this.label4.TabIndex = 45;
             this.label4.Text = "Comparison:";
-            // 
+            //
             // label5
-            // 
+            //
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(3, 124);
@@ -132,9 +132,9 @@
             this.label5.Size = new System.Drawing.Size(84, 13);
             this.label5.TabIndex = 53;
             this.label5.Text = "Rates based on:";
-            // 
+            //
             // cmbRateRuns
-            // 
+            //
             this.cmbRateRuns.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.cmbRateRuns, 3);
             this.cmbRateRuns.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -147,9 +147,9 @@
             this.cmbRateRuns.Name = "cmbRateRuns";
             this.cmbRateRuns.Size = new System.Drawing.Size(325, 21);
             this.cmbRateRuns.TabIndex = 54;
-            // 
+            //
             // txtName
-            // 
+            //
             this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.txtName, 3);
             this.txtName.Location = new System.Drawing.Point(93, 4);
@@ -157,9 +157,9 @@
             this.txtName.Size = new System.Drawing.Size(325, 20);
             this.txtName.TabIndex = 43;
             this.txtName.TextChanged += new System.EventHandler(txtName_TextChanged);
-            // 
+            //
             // cmbColumnType
-            // 
+            //
             this.cmbColumnType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.cmbColumnType, 3);
             this.cmbColumnType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -182,9 +182,9 @@
             this.cmbColumnType.Size = new System.Drawing.Size(325, 21);
             this.cmbColumnType.TabIndex = 46;
             this.cmbColumnType.SelectedIndexChanged += new System.EventHandler(cmbColumnType_SelectedIndexChanged);
-            // 
+            //
             // cmbComparison
-            // 
+            //
             this.cmbComparison.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.cmbComparison, 3);
             this.cmbComparison.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -194,9 +194,9 @@
             this.cmbComparison.Size = new System.Drawing.Size(325, 21);
             this.cmbComparison.TabIndex = 47;
             this.cmbComparison.SelectedIndexChanged += new System.EventHandler(cmbComparison_SelectedIndexChanged);
-            // 
+            //
             // cmbTimingMethod
-            // 
+            //
             this.cmbTimingMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.SetColumnSpan(this.cmbTimingMethod, 3);
             this.cmbTimingMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -210,9 +210,9 @@
             this.cmbTimingMethod.Size = new System.Drawing.Size(325, 21);
             this.cmbTimingMethod.TabIndex = 48;
             this.cmbTimingMethod.SelectedIndexChanged += new System.EventHandler(cmbTimingMethod_SelectedIndexChanged);
-            // 
+            //
             // chkColorByRate
-            // 
+            //
             this.chkColorByRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.chkColorByRate.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.chkColorByRate, 3);
@@ -224,7 +224,7 @@
             this.chkColorByRate.UseVisualStyleBackColor = true;
             //
             // btnRemoveColumn
-            // 
+            //
             this.btnRemoveColumn.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnRemoveColumn.Location = new System.Drawing.Point(324, 177);
             this.btnRemoveColumn.Name = "btnRemoveColumn";
@@ -233,9 +233,9 @@
             this.btnRemoveColumn.Text = "Remove Column";
             this.btnRemoveColumn.UseVisualStyleBackColor = true;
             this.btnRemoveColumn.Click += new System.EventHandler(this.btnRemoveColumn_Click);
-            // 
+            //
             // btnMoveDown
-            // 
+            //
             this.btnMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnMoveDown.Location = new System.Drawing.Point(223, 177);
             this.btnMoveDown.Name = "btnMoveDown";
@@ -244,9 +244,9 @@
             this.btnMoveDown.Text = "Move Down";
             this.btnMoveDown.UseVisualStyleBackColor = true;
             this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
-            // 
+            //
             // btnMoveUp
-            // 
+            //
             this.btnMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnMoveUp.Location = new System.Drawing.Point(142, 177);
             this.btnMoveUp.Name = "btnMoveUp";
@@ -255,9 +255,9 @@
             this.btnMoveUp.Text = "Move Up";
             this.btnMoveUp.UseVisualStyleBackColor = true;
             this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
-            // 
+            //
             // groupColumn
-            // 
+            //
             this.groupColumn.Controls.Add(this.tableLayoutPanel1);
             this.groupColumn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupColumn.Location = new System.Drawing.Point(0, 0);
@@ -266,9 +266,9 @@
             this.groupColumn.TabIndex = 1;
             this.groupColumn.TabStop = false;
             this.groupColumn.Text = "Column Name";
-            // 
+            //
             // ColumnSettings
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupColumn);
