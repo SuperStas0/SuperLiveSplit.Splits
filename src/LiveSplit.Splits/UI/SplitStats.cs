@@ -24,6 +24,7 @@ public class SplitStats
     private const string FormatVersionWithoutOutcomes = "2";
     private const string FormatVersionWithoutHistory = "1";
     private const int MaxOutcomes = 1000;
+    private const int MaxEntries = 10000;
 
     private sealed class Entry
     {
@@ -172,7 +173,7 @@ public class SplitStats
         }
 
         double ticks = cost / rate;
-        if (double.IsNaN(ticks) || ticks >= TimeSpan.MaxValue.Ticks)
+        if (double.IsNaN(ticks) || ticks < 0 || ticks >= TimeSpan.MaxValue.Ticks)
         {
             return null;
         }
@@ -530,6 +531,7 @@ public class SplitStats
 
         string[] parts = text.Split('|');
         if (parts.Length < 3
+            || parts.Length - 3 > MaxEntries
             || (parts[0] != FormatVersion && parts[0] != FormatVersionWithoutOutcomes && parts[0] != FormatVersionWithoutHistory)
             || !int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out storedAttempts)
             || !int.TryParse(parts[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out storedLastAttempt))
@@ -546,7 +548,11 @@ public class SplitStats
             var entry = new Entry();
             if (fields.Length != (hasOutcomes ? 7 : hasHistory ? 6 : 4)
                 || !int.TryParse(fields[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out int reached)
-                || !int.TryParse(fields[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int completed))
+                || !int.TryParse(fields[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int completed)
+                || reached < 0
+                || completed < 0
+                || reached == int.MaxValue
+                || completed == int.MaxValue)
             {
                 return null;
             }
@@ -556,7 +562,8 @@ public class SplitStats
             if (hasHistory)
             {
                 if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int historyCount)
-                    || !long.TryParse(fields[5], NumberStyles.Integer, CultureInfo.InvariantCulture, out long historySum))
+                    || !long.TryParse(fields[5], NumberStyles.Integer, CultureInfo.InvariantCulture, out long historySum)
+                    || historyCount < 0)
                 {
                     return null;
                 }

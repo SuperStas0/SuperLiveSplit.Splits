@@ -560,8 +560,9 @@ public class SplitComponent : IComponent
             return null;
         }
 
-        int percent = Math.Min((int)((fraction.Value * 100) + 1e-9), 100);
-        return percent == 0 && fraction.Value > 0 ? 1 : percent;
+        double clamped = Math.Max(Math.Min(fraction.Value, 1), 0);
+        int percent = (int)((clamped * 100) + 1e-9);
+        return percent == 0 && clamped > 0 ? 1 : percent;
     }
 
     protected float CalculateLabelsWidth()
