@@ -366,6 +366,11 @@ public class SplitStats
 
         bool anyWork = anySeed || needOutcomes.Contains(true);
         int previousLastAttempt = hasStored ? storedLastAttempt : int.MinValue;
+        if (hasStored)
+        {
+            previousLastAttempt = Math.Min(previousLastAttempt, attemptIds.Count > 0 ? attemptIds[^1] : 0);
+        }
+
         int newAttempts = hasStored ? storedAttempts : 0;
         int counted = 0;
         var apply = new bool[keys.Length];
