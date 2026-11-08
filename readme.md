@@ -7,6 +7,9 @@
 ## Installing
 Download `LiveSplit.Splits.dll` from releases and move it to `C:\Program Files (x86)\LiveSplit\Components` (or wherever you installed LiveSplit).
 
+## Opening layouts without this component
+Layouts with the extra column types don't open in the stock Splits component. Run `SplitsFixer.exe` from releases and select the layout (`.lsl`): it removes those columns and keeps the original as `.lsl.bak`. Splits files (`.lss`) are not touched, so their stats are kept.
+
 ## Columns
 - **Completed** - how many times the split has been completed (skipped splits count as completed)
 - **Reached** - how many times the split has been reached
@@ -28,6 +31,7 @@ Counts are saved in the splits file (`.lss`) as one permanent run variable named
 - Splits files without it are recalculated from the segment history when opened, and the variable is written on the next save
 - LiveSplit without this component ignores the variable; attempts made that way are added the next time the file is opened with it
 - A renamed split is matched again by its segment history; a newly added split starts at 0
+- Clearing the history in the splits editor clears the stats
 
 ## Building from source
 Requirements are the same as for [LiveSplit](https://github.com/LiveSplit/LiveSplit):
@@ -44,10 +48,10 @@ Flags are combinable (`build.bat -cir`), in any order:
 | --- | --- |
 | `-c` | clean: delete previous build output first |
 | `-i` | install: copy the build to `C:\Program Files (x86)\LiveSplit\Components` (change `INSTALLDIR` in `build.bat`; may need an administrator prompt) |
-| `-r` | release: copy the build to `release\` |
+| `-r` | release: copy `LiveSplit.Splits.dll` and `SplitsFixer.exe` to `release\` |
 | `-h` | show help and exit |
 
-Build output: `artifacts\bin\LiveSplit.Splits\release\LiveSplit.Splits.dll`
+Build output: `artifacts\bin\LiveSplit.Splits\release\LiveSplit.Splits.dll` and `artifacts\bin\SplitsFixer\release\SplitsFixer.exe`
 
 # License
 - MIT

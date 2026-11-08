@@ -308,11 +308,19 @@ public class SplitStats
     {
         averageCache.Clear();
         windowCache.Clear();
+        List<int> attemptIds = GetAttemptIds(run);
         Dictionary<string, Entry> stored = Parse(text, out int storedAttempts, out int storedLastAttempt);
+        bool cleared = stored != null && storedAttempts > 0 && attemptIds.Count == 0;
+        if (cleared)
+        {
+            stored = null;
+            storedAttempts = 0;
+            storedLastAttempt = int.MinValue;
+        }
+
         bool hasStored = stored != null;
         string[] keys = GetKeys(run);
         (int Count, long Sum)[] fingerprints = run.Select(GetFingerprint).ToArray();
-        List<int> attemptIds = GetAttemptIds(run);
 
         var newEntries = new Entry[keys.Length];
         var seed = new bool[keys.Length];
@@ -414,7 +422,7 @@ public class SplitStats
         lastAttempt = attemptIds.Count > 0 ? Math.Max(previousLastAttempt, attemptIds[^1]) : previousLastAttempt;
 
         string newText = Serialize(keys);
-        if (newText != text && (hasStored || attemptIds.Count > 0))
+        if (newText != text && (hasStored || attemptIds.Count > 0 || cleared))
         {
             WriteText(run, newText);
         }

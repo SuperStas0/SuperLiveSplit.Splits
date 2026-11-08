@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SplitsFixer</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>net4.8.1</TargetFramework>
+  </PropertyGroup>
+
+</Project>
