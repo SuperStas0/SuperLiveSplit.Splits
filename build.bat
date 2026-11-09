@@ -8,27 +8,33 @@ set "RELDIR=%~dp0release"
 set "CLEAN="
 set "INSTALL="
 set "RELEASE="
+set "NOBUILD="
 set "HELP="
 for %%a in (%*) do (
-    echo %%a| findstr /r /x /c:"-[cirh][cirh]*" >nul || (echo Unknown flag: %%a. Run build.bat -h for usage.& exit /b 1)
+    echo %%a| findstr /r /x /c:"-[cirnh][cirnh]*" >nul || (echo Unknown flag: %%a. Run build.bat -h for usage.& exit /b 1)
     echo %%a| findstr /c:"c" >nul && set "CLEAN=1"
     echo %%a| findstr /c:"i" >nul && set "INSTALL=1"
     echo %%a| findstr /c:"r" >nul && set "RELEASE=1"
+    echo %%a| findstr /c:"n" >nul && set "NOBUILD=1"
     echo %%a| findstr /c:"h" >nul && set "HELP=1"
 )
 ver >nul
-if defined HELP echo Usage: build.bat [-c] [-i] [-r] [-h]
+if defined HELP echo Usage: build.bat [-c] [-i] [-r] [-n] [-h]
 if defined HELP echo   -c  clean: delete previous build output first
 if defined HELP echo   -i  install: copy LiveSplit.Splits.dll to %INSTALLDIR%
 if defined HELP echo   -r  release: package LiveSplit.Splits.dll and SplitsFixer.exe into %RELDIR%
+if defined HELP echo   -n  nobuild: skip the build, reuse existing output (needs -i and/or -r, not with -c)
 if defined HELP echo   -h  show this help
 if defined HELP echo Build output: %OUT%
 if defined HELP echo Fixer output: %FIXEROUT%
 if defined HELP echo Release:      %RELDIR%
 if defined HELP exit /b 0
+if defined NOBUILD if defined CLEAN echo -n cannot be combined with -c.& exit /b 1
+if defined NOBUILD if not defined INSTALL if not defined RELEASE echo -n needs -i and/or -r.& exit /b 1
+if defined NOBUILD if not exist "%OUT%\LiveSplit.Splits.dll" echo No build output found. Run build.bat without -n first.& exit /b 1
+if defined NOBUILD if defined RELEASE if not exist "%FIXEROUT%\SplitsFixer.exe" echo No build output found. Run build.bat without -n first.& exit /b 1
 if defined CLEAN if exist "%~dp0artifacts" rmdir /s /q "%~dp0artifacts" & if errorlevel 1 exit /b 1
-dotnet build "%~dp0LiveSplit.Splits.sln" -c Release --nologo
-if errorlevel 1 exit /b 1
+if not defined NOBUILD dotnet build "%~dp0LiveSplit.Splits.sln" -c Release --nologo & if errorlevel 1 exit /b 1
 if defined INSTALL copy /y "%OUT%\LiveSplit.Splits.dll" "%INSTALLDIR%\LiveSplit.Splits.dll" >nul & if errorlevel 1 exit /b 1
 if defined RELEASE if not exist "%RELDIR%" mkdir "%RELDIR%"
 if defined RELEASE copy /y "%OUT%\LiveSplit.Splits.dll" "%RELDIR%\LiveSplit.Splits.dll" >nul & if errorlevel 1 exit /b 1
